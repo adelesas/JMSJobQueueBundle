@@ -15,8 +15,8 @@ class MarkJobIncompleteCommand extends Command
 {
     protected static $defaultName = 'jms-job-queue:mark-incomplete';
 
-    private $registry;
-    private $jobManager;
+    private ManagerRegistry $registry;
+    private JobManager $jobManager;
 
     public function __construct(ManagerRegistry $managerRegistry, JobManager $jobManager)
     {
@@ -26,7 +26,7 @@ class MarkJobIncompleteCommand extends Command
         $this->jobManager = $jobManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Internal command (do not use). It marks jobs as incomplete.')
@@ -34,7 +34,11 @@ class MarkJobIncompleteCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManager $em */
         $em = $this->registry->getManagerForClass(Job::class);

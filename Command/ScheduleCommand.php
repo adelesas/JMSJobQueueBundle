@@ -19,9 +19,9 @@ class ScheduleCommand extends Command
 {
     protected static $defaultName = 'jms-job-queue:schedule';
 
-    private $registry;
-    private $schedulers;
-    private $cronCommands;
+    private ManagerRegistry $registry;
+    private iterable $schedulers;
+    private iterable $cronCommands;
 
     public function __construct(ManagerRegistry $managerRegistry, iterable $schedulers, iterable $cronCommands)
     {
@@ -32,7 +32,7 @@ class ScheduleCommand extends Command
         $this->cronCommands = $cronCommands;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Schedules jobs at defined intervals')
@@ -41,7 +41,7 @@ class ScheduleCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $maxRuntime = $input->getOption('max-runtime');
         if ($maxRuntime > 300) {
